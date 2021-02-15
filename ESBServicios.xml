@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="f1bcbf7c-0000-4db5-903b-f80c1ae9529d" >
+		<http:listener-connection host="localhost" port="8081" />
+	</http:listener-config>
+	<http:request-config name="ObtenerUsuarios" doc:name="HTTP Request configuration" doc:id="3ecf7681-23b9-494c-9286-27953e4afa94" basePath="/users" >
+		<http:request-connection host="jsonplaceholder.typicode.com" usePersistentConnections="false"/>
+	</http:request-config>
+	<http:request-config name="ConeccionLocal" doc:name="HTTP Request configuration" doc:id="a72dc32e-daff-4dcd-b04f-e38a32c5ff45" >
+		<http:request-connection host="localhost" port="5050" />
+	</http:request-config>
+	<http:request-config name="ObtenerPerro" doc:name="HTTP Request configuration" doc:id="84a15838-2fe5-4a79-8d6d-b665b6630193" basePath="/api/breed">
+		<http:request-connection host="dog.ceo" usePersistentConnections="false"/>
+	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="31158701-9bdb-47a8-9b50-f16fea576101" >
+		<http:request-connection host="localhost" port="2323" />
+	</http:request-config>
+	<http:request-config name="BaseDatos" doc:name="HTTP Request configuration" doc:id="354101d4-67c0-4423-8c66-ca11790eef16" >
+		<http:request-connection host="localhost" port="2525" />
+	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration1" doc:name="HTTP Request configuration" doc:id="6cb9073e-57a6-4788-ac80-72366c4252f9" basePath="/v1/images" >
+		<http:request-connection host="api.thecatapi.com" />
+	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration2" doc:name="HTTP Request configuration" doc:id="d7fa585d-45bc-4fa2-a8ee-3065e0613e9c" basePath="/api/users/" >
+		<http:request-connection host="reqres.in" />
+	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration3" doc:name="HTTP Request configuration" doc:id="37fe2046-8453-49b0-ae5b-0ba5e5aaf499" basePath="/api/users/" >
+		<http:request-connection host="reqres.in" />
+	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration4" doc:name="HTTP Request configuration" doc:id="5bbb7374-f403-4401-961e-aed47678329e" basePath="/servicio/rs/servicios/guardar2">
+		<http:request-connection host="localhost" port="8085" />
+	</http:request-config>
+	<flow name="Copy_of_muleproyectFlow" doc:id="46cb9cb5-1ab2-4c29-8291-16bf50126fd0" >
+		<http:listener doc:name="run" doc:id="2900d876-f281-4dcf-9881-f0193b0c4d49" config-ref="HTTP_Listener_config" path="/{tipo}/{id}/{correo}/{nombre}/{apellido}/{url}/{descripcion}" />
+		<set-variable value="#[attributes.uriParams.tipo]" doc:name="Set Variable" doc:id="97e4558d-91dc-447d-ae7d-c08b9814c458" variableName="tipo"/>
+		<set-variable value="#[attributes.uriParams.id]" doc:name="Set Variable" doc:id="184e9b85-6698-4152-a1fe-6e5aa49b653c" variableName="id"/>
+		<set-variable value="#[attributes.uriParams.correo]" doc:name="Set Variable" doc:id="e38a78f7-7d0a-4219-adc9-c3e48ec5cabe" variableName="correo"/>
+		<set-variable value="#[attributes.uriParams.nombre]" doc:name="Set Variable" doc:id="a7ea41fc-a792-450a-905a-a4566f85bc9b" variableName="nombre"/>
+		<set-variable value="#[attributes.uriParams.apellido]" doc:name="Set Variable" doc:id="7cb78170-09d1-4d7e-af78-14f3efd1d8d7" variableName="apellido"/>
+		<set-variable value="#[attributes.uriParams.url]" doc:name="Set Variable" doc:id="0b35ae0d-e6ea-4ec2-8d4f-734a02b5ec7c" variableName="url"/>
+		<set-variable value="#[attributes.uriParams.descripcion]" doc:name="Set Variable" doc:id="0572c7ab-4ac0-43a6-a1f6-dbfd1a7f5211" variableName="descripcion"/>
+		<logger level="INFO" doc:name="Logger" doc:id="e0775f1b-b87c-4afb-ad5a-e44cedb1bddc" message="#[vars.tipo]"/>
+		<logger level="INFO" doc:name="Logger" doc:id="c5f0a765-b8b1-47ed-9fee-c6da4c7b57d3" message="#[vars.id]"/>
+		<choice doc:name="Choice" doc:id="4888b60f-62bc-4e32-80e6-6940144f5119" >
+			<when expression='#[vars.tipo == "1"]'>
+				<http:request method="GET" doc:name="ObtenerImagen" doc:id="9b99b3e8-a1e4-44c4-a7f2-04004cff71c6" config-ref="HTTP_Request_configuration1" path="/search"/>
+				<set-variable value="#[payload[0].url]" doc:name="imagen" doc:id="4e2fb26e-58b5-4bc2-9b81-57de53347e23" variableName="img"/>
+				<logger level="INFO" doc:name="Logger" doc:id="95a512f7-68c8-474d-97da-bc02a3a6c552" message="#[vars.img]"/>
+				<set-payload value='#[{"imagen": vars.img}]' doc:name="Set Payload" doc:id="9b46eceb-9a10-411c-a899-17400fd1c1c3" />
+			</when>
+			<when expression='#[vars.tipo == "2"]'>
+				<http:request method="GET" doc:name="Request" doc:id="eb08217e-f666-4498-b3dd-a8d0c72d2b08" config-ref="HTTP_Request_configuration2" path="#[vars.id]" />
+				<set-variable value="#[payload.data.email]" doc:name="Set Variable" doc:id="6a67798a-c6e8-4395-90f6-5e8d40a77361" variableName="usuario" />
+				<logger level="INFO" doc:name="Logger" doc:id="5086d072-94b9-4a8f-b2d5-e49368085499" message="#[vars.usuario]" />
+				<set-payload value='#[{"email": payload.data.email,
+&#10;"first_name": payload.data.first_name,
+&#10;"last_name":payload.data.last_name,
+&#10;"avatar_img":payload.data.avatar
+&#10;}]' doc:name="Set Payload" doc:id="97ba22b4-7c34-437c-a4c0-ddd5b39611ab" />
+			</when>
+			<when expression='#[vars.tipo == "3"]'>
+				<http:request method="GET" doc:name="Request" doc:id="77ecc68f-c4a4-4b5e-93de-1bf4f0f4b2b8" config-ref="HTTP_Request_configuration3" path="#[vars.id]" />
+				<logger level="INFO" doc:name="Logger" doc:id="48ff2d7a-ad22-44a1-b667-e375f8d5dc8d" message="#[payload.data.email]"/>
+				<choice doc:name="Choice" doc:id="4b89daad-62e1-49c5-8a3d-a8fc095711dc">
+					<when expression="#[vars.correo == payload.data.email]" >
+						<set-variable value='#[false]' doc:name="Set Variable" doc:id="8e1ef044-3073-4520-9d45-c7ffc2d7270c" variableName="valor"/>
+						<logger level="INFO" doc:name="Logger" doc:id="0d36a6c5-389b-4653-9a18-157ffb39faa4" message="#[vars.correo]"/>
+						<set-payload value='#[{"email": payload.data.email,
+&#10;"val_usr":true
+&#10;}]' doc:name="Set Payload" doc:id="d6584e09-4da0-4904-8f63-b45177f608cf" />
+					</when>
+					<otherwise >
+						<set-payload value='#[{"valor":false}]' doc:name="Set Payload" doc:id="a7877810-4b2d-47c8-810e-e70bb2940900" />
+					</otherwise>
+				</choice>
+			</when>
+			<when expression='#[vars.tipo == "4"]'>
+				<http:request method="GET" doc:name="Request" doc:id="15a46b57-1c02-4c42-990d-17a5717a7d06" config-ref="HTTP_Request_configuration4" path="?">
+					<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"url" : vars.url,
+	"apellido" : vars.apellido,
+	"descripcion" : vars.descripcion,
+	"nombre" : vars.nombre
+}]]]></http:query-params>
+				</http:request>
+				<logger level="INFO" doc:name="Logger" doc:id="97870abb-1f68-4086-8b9d-69b7273a401e" message="#[payload]"/>
+				<set-payload value="#[payload]" doc:name="Set Payload" doc:id="1309af67-baaf-4d57-a9d3-31f68029adcc" />
+			</when>
+		</choice>
+	</flow>
+</mule>
